@@ -1,0 +1,23 @@
+#library {
+  margin-top: 10px;
+
+  .queue_entry {
+    border: none;
+    padding: 5px 15px;
+    position: relative;
+
+    .btn-group {
+      position: absolute;
+      right: 10px;
+      bottom: 10px;
+    }
+
+    .qe_title {
+      margin-left: 5px;
+      font-size: 15px;
+      max-width: 400px;
+    }
+
+    border-bottom: 1px solid $text-muted;
+  }
+}
