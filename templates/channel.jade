@@ -6,12 +6,6 @@ append head
 append nav-left-links
   li: a(href="javascript:void(0)", onclick="javascript:showUserOptions()") Options
   li: a#showchansettings(href="javascript:void(0)", onclick="javascript:$('#channeloptions').modal()") Channel Settings
-  li.dropdown
-    a.dropdown-toggle(href="#", data-toggle="dropdown") Layout
-      b.caret
-    ul.dropdown-menu
-      li: a(href="#" onclick="javascript:chatOnly()") Chat Only
-      li: a(href="#" onclick="javascript:removeVideo()") Remove Video
 
 block content
   section#mainpage
