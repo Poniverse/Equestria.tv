@@ -14,18 +14,29 @@
   }
 }
 
-.server-msg-reconnect {
+.poll-notify,
+.server-msg-reconnect,
+.server-msg-disconnect {
   border-radius: 15px;
-  background: $brand-primary;
   border: none;
   color: #ffffff;
+}
+
+.poll-notify {
+  padding: 5px 0;
+  text-align: center;
+  font-size: 14px;
+  background: $brand-info
+}
+
+.server-msg-reconnect {
+  background: $brand-primary;
+
 }
 
 .server-msg-disconnect {
   border-radius: 15px;
   background: $brand-danger;
-  border: none;
-  color: #ffffff;
   font-size: 12px;
   padding: 6px 0;
 }
