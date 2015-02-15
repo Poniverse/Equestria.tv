@@ -1,0 +1,69 @@
+#chatwrap {
+  div[class^="chat-msg-"] {
+    .timestamp {
+      color: $text-muted;
+      margin-right: 5px;
+    }
+    .username {
+      color: #97d51e;
+    }
+  }
+
+  #userlist {
+    display: block;
+  }
+}
+
+.server-msg-reconnect {
+  border-radius: 15px;
+  background: $brand-primary;
+  border: none;
+  color: #ffffff;
+}
+
+.server-msg-disconnect {
+  border-radius: 15px;
+  background: $brand-danger;
+  border: none;
+  color: #ffffff;
+  font-size: 12px;
+  padding: 6px 0;
+}
+
+.nano {
+  position: relative;
+}
+
+.userlist.nano {
+  float: left;
+  width: 120px;
+  height: 350px;
+}
+.messagebuffer.nano {
+  width: 335px;
+  height: 350px;
+}
+
+.nano {
+  .nano-content {
+    padding: 10px;
+  }
+
+  > .nano-pane {
+    display: block !important;
+    background: #ffffff;
+    border: none;
+    z-index: 10000;
+  }
+
+  > .nano-pane > .nano-slider {
+    background: $text-muted;
+  }
+}
+
+#chatline {
+  margin-top: 10px;
+  border: none;
+  background: #ededed;
+  box-shadow: none;
+}

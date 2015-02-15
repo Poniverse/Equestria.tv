@@ -1,0 +1,17 @@
+.header {
+  margin-top: -20px;
+  background: $brand-primary;
+  min-height: 100px;
+}
+
+#wrap {
+  margin-top: -100px;
+  margin-bottom: 0px;
+}
+
+#wrap > #mainpage > .container {
+  padding: 15px 15px;
+  background: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 0 5px 0 rgba(0,0,0,0.10);
+}

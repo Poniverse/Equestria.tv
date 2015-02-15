@@ -697,12 +697,12 @@ function applyOpts() {
         if (theme === "default") {
             theme = "/css/themes/slate.css";
         }
-        $("<link/>").attr("rel", "stylesheet")
+        /*$("<link/>").attr("rel", "stylesheet")
             .attr("type", "text/css")
             .attr("id", "usertheme")
             .attr("href", theme)
             .attr("onload", "$('#usertheme_old').remove()")
-            .appendTo($("head"));
+            .appendTo($("head"));*/
         fixWeirdButtonAlignmentIssue();
     }
 
@@ -1389,7 +1389,7 @@ function formatChatMessage(data, last) {
     if (USEROPTS.show_timestamps) {
         var time = $("<span/>").addClass("timestamp").appendTo(div);
         var timestamp = new Date(data.time).toTimeString().split(" ")[0];
-        time.text("["+timestamp+"] ");
+        time.text(timestamp);
         if (data.meta.addClass && data.meta.addClassToNameAndTimestamp) {
             time.addClass(data.meta.addClass);
         }

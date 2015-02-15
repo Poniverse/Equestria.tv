@@ -1,4 +1,7 @@
 (function () {
+  // We really don't need this;
+  return;
+
   var c = document.cookie.split(";").map(function (s) {
     return s.trim();
   });

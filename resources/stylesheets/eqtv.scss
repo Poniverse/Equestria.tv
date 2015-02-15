@@ -3,5 +3,12 @@
 // Vendor Items
 @import "vendor";
 
-// Components
+// Globals
 @import "globals/nav";
+@import "globals/wrapper";
+
+// Components
+@import "components/chat";
+
+// Sections
+@import "sections/channel";

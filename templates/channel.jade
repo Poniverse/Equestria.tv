@@ -27,6 +27,9 @@ block content
       #drinkbarwrap.row
         #drinkbar.col-lg-12.col-md-12
           h1#drinkcount
+
+      h2#currenttitle Nothing Playing
+
       #main.row
         #chatwrap.col-lg-5.col-md-5
           #chatheader
@@ -34,14 +37,15 @@ block content
             span#usercount.pointer Not Connected
             span#modflair.label.label-default.pull-right.pointer M
             span#adminflair.label.label-default.pull-right.pointer A
-          #userlist
-          #messagebuffer.linewrap
-          input#chatline.form-control(type="text", maxlength="240", style="display: none")
+          .nano.userlist
+            #userlist.nano-content
+          .nano.messagebuffer
+            #messagebuffer.linewrap.nano-content
+          input#chatline.form-control(type="text", maxlength="240", style="display: none", placeholder="leave a comment...")
           #guestlogin.input-group
             span.input-group-addon Guest login
             input#guestname.form-control(type="text", placeholder="Name")
         #videowrap.col-lg-7.col-md-7
-          p#currenttitle Nothing Playing
           .embed-responsive.embed-responsive-16by9
             #ytapiplayer.embed-responsive-item
       #controlsrow.row
@@ -216,9 +220,14 @@ append footer
   script(src="/js/paginator.js")
   script(src="/js/ui.js")
   script(src="/js/callbacks.js")
+  script(src="/js/vendor/jquery.nanoscroller.js")
   script(defer, src="https://www.youtube.com/iframe_api")
   script(defer, src="//api.dmcdn.net/all.js")
   script(defer, src="//jwpsrv.com/library/QouFCLBMEeKC+CIACpYGxA.js")
   script(defer, src="/js/sc.js")
   script(defer, src="/js/froogaloop.min.js")
   script(defer, src="/js/swf.js")
+  script(type="text/javascript").
+    setTimeout(function() {
+      $(".nano").nanoScroller();
+    }, 2000)

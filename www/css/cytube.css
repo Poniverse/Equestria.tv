@@ -22,7 +22,7 @@
     margin-top: 10px;
 }
 
-#messagebuffer {
+/*#messagebuffer {
     width: auto;
 }
 
@@ -46,7 +46,7 @@
     margin-top: 0;
     border-top-left-radius: 0;
     border-top-right-radius: 0;
-}
+}*/
 
 .linewrap, .linewrap code {
     white-space: pre-wrap; /* css-3 */

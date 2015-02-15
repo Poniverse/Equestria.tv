@@ -49,6 +49,14 @@ Copy fonts
       ]
         .pipe gulp.dest('www/fonts')
 
+Copy JS
+
+    gulp.task 'copy:js', () ->
+      gulp.src [
+        'bower_components/nanoscroller/bin/javascripts/jquery.nanoscroller.js'
+      ]
+        .pipe gulp.dest('www/js/vendor')
+
 Realtime Compilation
 
     gulp.task 'watch', ['build'], () ->
@@ -59,11 +67,9 @@ Realtime Compilation
 
 Build everything!
 
-    gulp.task 'build', ['css', 'copy:fonts']
+    gulp.task 'build', ['css', 'copy:fonts', 'copy:js']
     # Not much else to do here - everything has already run!
 
 Default Task
 
     gulp.task 'default', ['build'] # All we do is call build!
-
-Credit where credit is due, this has been copied from Poniverse and modified for use within Socrates.
