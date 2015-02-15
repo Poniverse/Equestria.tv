@@ -93,7 +93,7 @@ function getOrDefault(k, def) {
 
 var USEROPTS = {
     theme                : getOrDefault("theme", "/css/eqtv.css"),
-    layout               : getOrDefault("layout", "fluid"),
+    layout               : "synchtube",
     synch                : getOrDefault("synch", true),
     hidevid              : getOrDefault("hidevid", false),
     show_timestamps      : getOrDefault("show_timestamps", true),

@@ -653,7 +653,7 @@ function showUserOptions() {
 function saveUserOptions() {
     USEROPTS.theme                = $("#us-theme").val();
     createCookie("cytube-theme", USEROPTS.theme, 1000);
-    USEROPTS.layout               = $("#us-layout").val();
+    USEROPTS.layout               = 'synchtube';
     USEROPTS.ignore_channelcss    = $("#us-no-channelcss").prop("checked");
     USEROPTS.ignore_channeljs     = $("#us-no-channeljs").prop("checked");
     USEROPTS.secure_connection    = $("#us-ssl").prop("checked");
