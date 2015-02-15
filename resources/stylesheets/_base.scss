@@ -1,0 +1,41 @@
+// Import bootstrap variables
+@import "../../bower_components/bootstrap-sass/assets/stylesheets/bootstrap/variables";
+
+//== Colors
+//
+//## Gray and brand colors for use across Bootstrap.
+
+// Brand Colours
+$brand-primary:   #98D61E;
+$brand-success:   #5cb85c;
+$brand-info:      #5bc0de;
+$brand-warning:   #f0ad4e;
+$brand-danger:    #d9534f;
+
+//== Navbar
+//
+//##
+
+// Navbar defaults
+$navbar-default-color:                     #fff;
+$navbar-default-bg:                        $brand-primary;
+$navbar-default-border:                    none;
+
+// Navbar links
+$navbar-default-link-color:                #fff;
+$navbar-default-link-hover-color:          #d4d4d4;
+$navbar-default-link-hover-bg:             #478f99;
+$navbar-default-link-active-color:         #fff;
+$navbar-default-link-active-bg:            darken($navbar-default-bg, 6.5%);
+$navbar-default-link-disabled-color:       #ccc;
+$navbar-default-link-disabled-bg:          transparent;
+
+// Navbar brand label
+$navbar-default-brand-color:               $navbar-default-link-color;
+$navbar-default-brand-hover-color:         darken($navbar-default-brand-color, 10%);
+$navbar-default-brand-hover-bg:            transparent;
+
+// Navbar toggle
+$navbar-default-toggle-hover-bg:           darken($navbar-default-bg, 6.5%);
+$navbar-default-toggle-icon-bar-bg:        #fff;
+$navbar-default-toggle-border-color:       #fff;
