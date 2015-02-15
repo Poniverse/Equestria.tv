@@ -22,15 +22,15 @@ $border-radius-small: 15px;
 
 // Navbar defaults
 $navbar-default-color:                     #fff;
-$navbar-default-bg:                        #acdd4b;
+$navbar-default-bg:                        $brand-primary;
 $navbar-default-border:                    none;
 
 // Navbar links
 $navbar-default-link-color:                #fff;
 $navbar-default-link-hover-color:          #fff;
-$navbar-default-link-hover-bg:             darken($navbar-default-bg, 6.5%);
+$navbar-default-link-hover-bg:             $brand-primary;
 $navbar-default-link-active-color:         #fff;
-$navbar-default-link-active-bg:            darken($navbar-default-bg, 6.5%);
+$navbar-default-link-active-bg:            $brand-primary;
 $navbar-default-link-disabled-color:       #ccc;
 $navbar-default-link-disabled-bg:          transparent;
 
