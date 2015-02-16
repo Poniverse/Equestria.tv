@@ -14,19 +14,15 @@ mixin navdefaultlinks(page)
       mixin navlink(p, t, true)
     else
       mixin navlink(p, t, false)
-  li.dropdown
-    a.dropdown-toggle(href="#", data-toggle="dropdown") Account
-      b.caret
-    ul.dropdown-menu
-      if loggedIn
-        li: a(href="/logout?redirect=#{page}") Logout
-        li.divider
-        li: a(href="/account/channels") Channels
-        li: a(href="/account/profile") Profile
-        li: a(href="/account/edit") Change Password/Email
-      else
-        li: a(href="/login") Login
-        li: a(href="/register") Register
+  if loggedIn
+    li.dropdown
+      a.dropdown-toggle(href="#", data-toggle="dropdown") Account
+        b.caret
+        ul.dropdown-menu
+          li: a(href="/logout?redirect=#{page}") Logout
+          li.divider
+          li: a(href="/account/channels") Channels
+          li: a(href="/account/profile") Profile
 
 mixin navloginlogout(redirect)
   if loggedIn
@@ -35,16 +31,8 @@ mixin navloginlogout(redirect)
     mixin navloginform(redirect)
 
 mixin navloginform(redirect)
-  .visible-md.visible-lg
-    if loginDomain == null
-      - loginDomain = ""
-    form#loginform.navbar-form.navbar-right(action="#{loginDomain}/login", method="post")
-      input(type="hidden", name="redirect", value=redirect)
-      .form-group
-        input#username.form-control(type="text", name="name", placeholder="Username")
-      .form-group
-        input#password.form-control(type="password", name="password", placeholder="Password")
-      button#login.btn.btn-default(type="submit") Login
+  ul.nav.navbar-nav.pull-right
+    li: a(href="/login") Login
 
 mixin navlogoutform(redirect)
   if loginDomain == null

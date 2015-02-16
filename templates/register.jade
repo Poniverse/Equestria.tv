@@ -19,22 +19,6 @@ block content
           .alert.alert-danger.messagebox.center
             strong Registration Failed
             p= registerError
-        h2 Register
-        form(role="form", action="/register", method="post", onsubmit="return verify()")
-          .form-group
-            label.control-label(for="username") Username
-            input#username.form-control(type="text", name="name")
-          .form-group
-            label.control-label(for="password") Password
-            input#password.form-control(type="password", name="password", onkeyup="checkPasswords()")
-          .form-group
-            label.control-label(for="password_confirm") Confirm Password
-            input#password_confirm.form-control(type="password", onkeyup="checkPasswords()")
-          .form-group
-            label.control-label(for="email") Email (optional)
-            input#email.form-control(type="email", name="email")
-            p Providing an email address is optional and will allow you to recover your account via email if you forget your password.  Your address will not be shared with anyone.
-          button#registerbtn.btn.btn-success.btn-block(type="submit") Register
     else
       .col-lg-6.col-lg-offset-3.col-md-6.col-md-offset-3
         .alert.alert-success.messagebox.center

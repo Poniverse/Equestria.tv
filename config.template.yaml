@@ -191,3 +191,11 @@ ffmpeg:
   enabled: false
 
 link-domain-blacklist: []
+
+
+# Poniverse OAuth2 client information
+#
+# Warning: This fork exclusively uses poniverse as its authentication sources
+poniverse:
+  client_id: ""
+  client_secret: ""
