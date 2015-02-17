@@ -11,11 +11,15 @@ block content
             th # Connected
             th Now Playing
           tbody
-            each chan in channels
+            unless channels.length
               tr
-                td: a(href="/r/#{chan.name}") #{chan.pagetitle} (#{chan.name})
-                td= chan.usercount
-                td= chan.mediatitle
+                td(colspan=3) There are no active channels at this time, why not start one on the right?
+            else
+              each chan in channels
+                tr
+                  td: a(href="/r/#{chan.name}") #{chan.pagetitle} (#{chan.name})
+                  td= chan.usercount
+                  td= chan.mediatitle
       .col-lg-3.col-md-3
         h3 Enter Channel
         input#channelname.form-control(type="text", placeholder="Channel Name")
