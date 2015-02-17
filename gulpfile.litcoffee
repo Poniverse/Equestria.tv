@@ -64,6 +64,7 @@ Realtime Compilation
 
       gulp.watch('resources/stylesheets/**/*.scss', ['css'])
       gulp.watch('www/css/eqtv.css').on 'change', livereload.changed
+      gulp.watch('templates/**/*.jade').on 'change', livereload.changed
 
 Build everything!
 
