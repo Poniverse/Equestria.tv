@@ -10,23 +10,26 @@ block content
             p You must be <a href="/login">logged in</a> to view this page.
       else
         .col-lg-6.col-lg-offset-3.col-md-6.col-md-offset-3
-          h3 Profile
+          h3 Hovercard Preview
+          p.text-muted This is shown when someone hover overs your username in the chat.
           if profileError
             .alert.alert-danger.center.messagebox
               strong Profile Error
               p= profileError
           .profile-box.linewrap(style="position: inherit; z-index: auto;")
-            img.profile-image(src=profileImage)
-            strong= loginName
-            p= profileText
+            if profileImage
+              img.profile-image(src=profileImage)
+            strong= ' ' + loginName
+            if profileText
+              p= profileText
           h3 Edit Profile
           form(action="/account/profile", method="post", role="form")
             .form-group
-              label.control-label(for="profileimage") Image
+              label.control-label(for="profileimage") Avatar Url
               input#profileimage.form-control(type="text", name="image")
             .form-group
-              label.control-label(for="profiletext") Text
-              textarea#profiletext.form-control(cols="10", name="text")= profileText
+              label.control-label(for="profiletext") Bio
+              textarea#profiletext.form-control(cols="10", name="text", placeholder="Write some short, inspiring, informative information about yourself. Or you could just write something completely irrelevant the possibilities are limitless.")= profileText
             button.btn.btn-primary.btn-block(type="submit") Save
 
 append footer
