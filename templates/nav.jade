@@ -14,15 +14,7 @@ mixin navdefaultlinks(page)
       mixin navlink(p, t, true)
     else
       mixin navlink(p, t, false)
-  if loggedIn
-    li.dropdown
-      a.dropdown-toggle(href="#", data-toggle="dropdown") Account
-        b.caret
-        ul.dropdown-menu
-          li: a(href="/logout?redirect=#{page}") Logout
-          li.divider
-          li: a(href="/account/channels") Channels
-          li: a(href="/account/profile") Profile
+
 
 mixin navloginlogout(redirect)
   if loggedIn
@@ -41,7 +33,13 @@ mixin navlogoutform(redirect)
     - url = "logout?redirect=" + redirect
   else
     - url = "logout"
-  p#logoutform.navbar-text.pull-right
-    span#welcome Welcome, #{loginName}
-    span &nbsp;&middot;&nbsp;
-    a#logout.navbar-link(href="#{loginDomain}/#{url}") Logout
+
+  ul.nav.navbar-nav.pull-right
+    li.dropdown
+      a.dropdown-toggle(href="#", data-toggle="dropdown") #{loginName}&nbsp;
+        b.caret
+        ul.dropdown-menu
+          li: a(href="/account/channels") Channels
+          li: a(href="/account/profile") Profile
+          li.divider
+          li: a(href="/logout?redirect=#{page}") Logout
