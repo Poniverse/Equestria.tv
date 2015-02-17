@@ -9,7 +9,16 @@ body > nav {
   }
 
   .navbar-nav > li > .dropdown-menu {
+    margin-left: -60px;
     margin-top: -10px;
     border-radius: $border-radius-base;
+  }
+
+  ul.navbar-nav {
+    font-size: 16px;
+  }
+
+  ul.nav.navbar-nav.pull-right {
+    font-weight: 600;
   }
 }
