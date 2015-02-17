@@ -199,3 +199,7 @@ link-domain-blacklist: []
 poniverse:
   client_id: ""
   client_secret: ""
+
+image-whitelist:
+  - mlpforums.com
+  - imgur.com
