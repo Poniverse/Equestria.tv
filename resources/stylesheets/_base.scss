@@ -16,6 +16,14 @@ $border-radius-base: 15px;
 $border-radius-large: 15px;
 $border-radius-small: 15px;
 
+//== Typography
+//
+//## Font, line-height, and color for body text, headings, and more.
+
+$font-family-sans-serif: "proxima-nova-soft", sans-serif;
+$headings-font-family: "proxima-nova-soft", sans-serif;
+$font-family-base: $font-family-sans-serif;
+
 //== Navbar
 //
 //##
