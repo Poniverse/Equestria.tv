@@ -8,15 +8,19 @@ append nav-left-links
   li: a#showchansettings(href="javascript:void(0)", onclick="javascript:$('#channeloptions').modal()") Channel Settings
 
 block content
-  section#mainpage
+
+
+  section#motdsection
     .container
       #motdrow.row
         .col-lg-12.col-md-12
-          #motdwrap.well
-            button#togglemotd.close.pull-right(type="button")
-              span.glyphicon.glyphicon-minus
-            #motd
-            .clear
+          //button#togglemotd.close.pull-right(type="button")
+          //  span.glyphicon.glyphicon-minus
+          #motd
+          .clear
+
+  section#mainpage
+    .container
       #announcements.row
       #drinkbarwrap.row
         #drinkbar.col-lg-12.col-md-12
