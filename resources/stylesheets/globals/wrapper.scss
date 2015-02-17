@@ -10,14 +10,16 @@
   margin-bottom: 0;
 }
 
-#wrap > #mainpage.container,
-#wrap > #mainpage > .container {
-  padding: 15px 15px;
-  background: #ffffff;
-  border-radius: 15px;
-  box-shadow: 0 0 5px 0 rgba(0,0,0,0.10);
-}
+#wrap > #mainpage {
+  .container,
+  > .container {
+    padding: 15px 15px;
+    background: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 0 5px 0 rgba(0,0,0,0.10);
+  }
 
-#wrap > #mainpage.container {
-  margin-top: 60px;
+  &.container {
+    margin-top: 60px;
+  }
 }
