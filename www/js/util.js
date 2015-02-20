@@ -1565,10 +1565,10 @@ function fluidLayout() {
 }
 
 function synchtubeLayout() {
-    if($("#userlisttoggle").hasClass("glyphicon-chevron-right")){
-        $("#userlisttoggle").removeClass("glyphicon-chevron-right").addClass("glyphicon-chevron-left")
-    }
-    $("#userlisttoggle").removeClass("pull-left").addClass("pull-right")
+    //if($("#userlisttoggle").hasClass("glyphicon-chevron-right")){
+    //    $("#userlisttoggle").removeClass("glyphicon-chevron-right").addClass("glyphicon-chevron-left")
+    //}
+    //$("#userlisttoggle").removeClass("pull-left").addClass("pull-right")
     $("#videowrap").detach().insertBefore($("#chatwrap"));
     $("#rightcontrols").detach().insertBefore($("#leftcontrols"));
     $("#rightpane").detach().insertBefore($("#leftpane"));

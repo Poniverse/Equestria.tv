@@ -707,7 +707,7 @@ $("#cs-emotes-import").click(function () {
 });
 
 var toggleUserlist = function () {
-    var direction = !USEROPTS.layout.match(/synchtube/) ? "glyphicon-chevron-right" : "glyphicon-chevron-left"
+    var direction = !USEROPTS.layout.match(/synchtube/) || true ? "glyphicon-chevron-right" : "glyphicon-chevron-left"
     if ($(".userlist").css("display") === "none") {
         $(".userlist").show();
         $("#userlisttoggle").removeClass(direction).addClass("glyphicon-chevron-down");
