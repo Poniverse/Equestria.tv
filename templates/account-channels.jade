@@ -19,7 +19,7 @@ block content
             .center
               strong You haven't registered any channels
           else
-            table.table.table-bordered
+            table.table.table-striped
               thead
                 tr
                   th Channel
@@ -30,7 +30,7 @@ block content
                       form.form-inline.pull-right(action="/account/channels", method="post", onsubmit="return confirm('Are you sure you want to delete #{c.name}?  This cannot be undone');")
                         input(type="hidden", name="action", value="delete_channel")
                         input(type="hidden", name="name", value="#{c.name}")
-                        button.btn.btn-xs.btn-danger(type="submit") Delete
+                        button.btn.btn-xs.btn-danger(type="submit") Delete&nbsp;
                           span.glyphicon.glyphicon-trash
                       a(href="/r/#{c.name}", style="margin-left: 5px")= c.name
         .col-lg-6.col-md-6
