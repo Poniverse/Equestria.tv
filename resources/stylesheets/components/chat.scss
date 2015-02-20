@@ -45,16 +45,17 @@
 .userlist.nano {
   float: left;
   width: 120px;
-  height: 350px;
+  height: 301px;
 }
 .messagebuffer.nano {
-  width: 335px;
-  height: 350px;
+  width: 330px;
+  height: 301px;
 }
 
 .nano {
   .nano-content {
     padding: 10px;
+    height: 301px;
   }
 
   > .nano-pane {
@@ -66,7 +67,12 @@
 
   > .nano-pane > .nano-slider {
     background: $text-muted;
+
   }
+}
+
+#messagebuffer {
+  height: 301px !important;
 }
 
 #chatline {
