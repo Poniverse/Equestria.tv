@@ -192,6 +192,9 @@ ffmpeg:
 
 link-domain-blacklist: []
 
+trusted-proxies:
+  - 127.0.0.1
+  - ::1
 
 # Poniverse OAuth2 client information
 #
