@@ -183,9 +183,9 @@ function eraseCookie(name) {
     var localVersion = parseFloat(getOpt("version"));
     if (isNaN(localVersion)) {
         USEROPTS.theme = "/css/eqtv.css";
-        USEROPTS.layout = "fluid";
+        USEROPTS.layout = "synchtube";
         setOpt("theme", "/css/eqtv.css");
-        setOpt("layout", "fluid");
+        setOpt("layout", "synchtube");
         setOpt("version", CL_VERSION);
     }
 })();

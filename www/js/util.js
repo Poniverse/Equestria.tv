@@ -707,11 +707,9 @@ function applyOpts() {
     }
 
     switch (USEROPTS.layout) {
-        case "synchtube-fluid":
+        /*case "synchtube-fluid":
             fluidLayout();
-        case "synchtube":
-            synchtubeLayout();
-            break;
+
         case "fluid":
             fluidLayout();
             break;
@@ -720,6 +718,10 @@ function applyOpts() {
             break;
         default:
             compactLayout();
+            break;*/
+        default:
+        case "synchtube":
+            synchtubeLayout();
             break;
     }
 
