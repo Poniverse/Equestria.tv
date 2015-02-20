@@ -197,6 +197,7 @@ link-domain-blacklist: []
 #
 # Warning: This fork exclusively uses poniverse as its authentication sources
 poniverse:
+  proxy: false
   client_id: ""
   client_secret: ""
 
