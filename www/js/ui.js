@@ -591,12 +591,6 @@ $("#cs-csssubmit").click(function () {
     });
 });
 
-$("#cs-jssubmit").click(function () {
-    socket.emit("setChannelJS", {
-        js: $("#cs-jstext").val()
-    });
-});
-
 $("#cs-chatfilters-newsubmit").click(function () {
     var name = $("#cs-chatfilters-newname").val();
     var regex = $("#cs-chatfilters-newregex").val();

@@ -865,10 +865,6 @@ function handleModPermissions() {
     /* update channel controls */
     $("#cs-pagetitle").val(CHANNEL.opts.pagetitle);
     $("#cs-pagetitle").attr("disabled", CLIENT.rank < 3);
-    $("#cs-externalcss").val(CHANNEL.opts.externalcss);
-    $("#cs-externalcss").attr("disabled", CLIENT.rank < 3);
-    $("#cs-externaljs").val(CHANNEL.opts.externaljs);
-    $("#cs-externaljs").attr("disabled", CLIENT.rank < 3);
     $("#cs-chat_antiflood").prop("checked", CHANNEL.opts.chat_antiflood);
     if ("chat_antiflood_params" in CHANNEL.opts) {
         $("#cs-chat_antiflood_burst").val(CHANNEL.opts.chat_antiflood_params.burst);
@@ -903,13 +899,11 @@ function handleModPermissions() {
         $("#cs-maxlength").val(h + ":" + m + ":" + s);
     })();
     $("#cs-csstext").val(CHANNEL.css);
-    $("#cs-jstext").val(CHANNEL.js);
     $("#cs-motdtext").val(CHANNEL.motd);
     setParentVisible("a[href='#cs-motdeditor']", hasPermission("motdedit"));
     setParentVisible("a[href='#cs-permedit']", CLIENT.rank >= 3);
     setParentVisible("a[href='#cs-banlist']", hasPermission("ban"));
     setParentVisible("a[href='#cs-csseditor']", CLIENT.rank >= 3);
-    setParentVisible("a[href='#cs-jseditor']", CLIENT.rank >= 3);
     setParentVisible("a[href='#cs-chatfilters']", hasPermission("filteredit"));
     setParentVisible("a[href='#cs-emotes']", hasPermission("emoteedit"));
     setParentVisible("a[href='#cs-chanranks']", CLIENT.rank >= 3);
@@ -2604,124 +2598,6 @@ function fallbackRaw(data) {
     PLAYER = new FlashPlayer(data);
 
     handleMediaUpdate(data);
-}
-
-function checkScriptAccess(source, type, cb) {
-    var pref = JSPREF[CHANNEL.name.toLowerCase() + "_" + type];
-    if (pref === "ALLOW") {
-        return cb("ALLOW");
-    } else if (pref !== "DENY") {
-        var div = $("#chanjs-allow-prompt");
-        if (div.length > 0) {
-            setTimeout(function () {
-                checkScriptAccess(source, type, cb);
-            }, 500);
-            return;
-        }
-
-        div = $("<div/>").attr("id", "chanjs-allow-prompt");
-        var close = $("<button/>").addClass("close pull-right")
-            .html("&times;")
-            .appendTo(div);
-        var form = $("<form/>")
-            .attr("action", "javascript:void(0)")
-            .attr("id", "chanjs-allow-prompt")
-            .attr("style", "text-align: center")
-            .appendTo(div);
-        form.append("<span>This channel has special features that require your permission to run.</span><br>");
-        $("<a/>").attr("href", source)
-            .attr("target", "_blank")
-            .text(type === "embedded" ? "view embedded script" : source)
-            .appendTo(form);
-        form.append("<div id='chanjs-allow-prompt-buttons'>" +
-                        "<button id='chanjs-allow' class='btn btn-xs btn-danger'>Allow</button>" +
-                        "<button id='chanjs-deny' class='btn btn-xs btn-danger'>Deny</button>" +
-                    "</div>");
-        form.append("<div class='checkbox'><label><input type='checkbox' " +
-                    "id='chanjs-save-pref'/>Remember my choice for this channel" +
-                    "</label></div>");
-        var dialog = chatDialog(div);
-
-        close.click(function () {
-            dialog.remove();
-            /* Implicit denial of script access */
-            cb("DENY");
-        });
-
-        $("#chanjs-allow").click(function () {
-            var save = $("#chanjs-save-pref").is(":checked");
-            dialog.remove();
-            if (save) {
-                JSPREF[CHANNEL.name.toLowerCase() + "_" + type] = "ALLOW";
-                setOpt("channel_js_pref", JSPREF);
-            }
-            cb("ALLOW");
-        });
-
-        $("#chanjs-deny").click(function () {
-            var save = $("#chanjs-save-pref").is(":checked");
-            dialog.remove();
-            if (save) {
-                JSPREF[CHANNEL.name.toLowerCase() + "_" + type] = "DENY";
-                setOpt("channel_js_pref", JSPREF);
-            }
-            cb("DENY");
-        });
-    }
-}
-
-function formatScriptAccessPrefs() {
-    var tbl = $("#us-scriptcontrol table");
-    tbl.find("tbody").remove();
-
-    var channels = Object.keys(JSPREF).sort();
-    channels.forEach(function (channel) {
-        var parts = channel.split("_");
-        if (!parts[1].match(/^(external|embedded)$/)) {
-            return;
-        }
-
-        var pref = JSPREF[channel];
-        var tr = $("<tr/>").appendTo(tbl);
-        $("<td/>").text(parts[0]).appendTo(tr);
-        $("<td/>").text(parts[1]).appendTo(tr);
-
-        var pref_td = $("<td/>").appendTo(tr);
-        var allow_label = $("<label/>").addClass("radio-inline")
-            .text("Allow").appendTo(pref_td);
-        var allow = $("<input/>").attr("type", "radio")
-            .prop("checked", pref === "ALLOW").
-            prependTo(allow_label);
-        allow.change(function () {
-            if (allow.is(":checked")) {
-                JSPREF[channel] = "ALLOW";
-                setOpt("channel_js_pref", JSPREF);
-                deny.prop("checked", false);
-            }
-        });
-
-        var deny_label = $("<label/>").addClass("radio-inline")
-            .text("Deny").appendTo(pref_td);
-        var deny = $("<input/>").attr("type", "radio")
-            .prop("checked", pref === "DENY").
-            prependTo(deny_label);
-        deny.change(function () {
-            if (deny.is(":checked")) {
-                JSPREF[channel] = "DENY";
-                setOpt("channel_js_pref", JSPREF);
-                allow.prop("checked", false);
-            }
-        });
-
-        var clearpref = $("<button/>").addClass("btn btn-sm btn-danger")
-            .text("Clear Preference")
-            .appendTo($("<td/>").appendTo(tr))
-            .click(function () {
-                delete JSPREF[channel];
-                setOpt("channel_js_pref", JSPREF);
-                tr.remove();
-            });
-    });
 }
 
 /*

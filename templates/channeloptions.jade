@@ -74,8 +74,6 @@ mixin adminoptions
       - var defname = "CyTube - /r/" + channelName
       mixin textbox-auto("cs-pagetitle", "Page title", defname)
       mixin textbox-auto("cs-password", "Password", "leave blank to disable")
-      mixin textbox-auto("cs-externalcss", "External CSS", "Stylesheet URL")
-      mixin textbox-auto("cs-externaljs", "External Javascript", "Script URL")
       mixin rcheckbox-auto("cs-show_public", "List channel publicly")
       mixin rcheckbox-auto("cs-torbanned", "Block connections from Tor")
       mixin rcheckbox-auto("cs-allow_ascii_control", "Allow ASCII control characters (e.g. newlines)")
@@ -100,13 +98,6 @@ mixin csseditor
     p Maximum size 20KB.  If more space is required, use the External CSS option under General Settings to link to an externally hosted stylesheet.
     textarea.form-control#cs-csstext(rows="10")
     button.btn.btn-primary#cs-csssubmit Save CSS
-
-mixin jseditor
-  #cs-jseditor.tab-pane
-    h4 JS editor
-    p Maximum size 20KB.  If more space is required, use the External JS option under General Settings to link to an externally hosted stylesheet.
-    textarea.form-control#cs-jstext(rows="10")
-    button.btn.btn-primary#cs-jssubmit Save JS
 
 mixin banlist
   #cs-banlist.tab-pane

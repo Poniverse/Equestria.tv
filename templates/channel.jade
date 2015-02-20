@@ -186,7 +186,6 @@ prepend footer
                 li: a(href="#cs-emotes", data-toggle="tab") Emotes
                 li: a(href="#cs-motdeditor", data-toggle="tab", tabindex="-1") MOTD
                 li: a(href="#cs-csseditor", data-toggle="tab", tabindex="-1") CSS
-                li: a(href="#cs-jseditor", data-toggle="tab", tabindex="-1") Javascript
                 li: a(href="#cs-permedit", data-toggle="tab", tabindex="-1") Permissions
                 li: a(href="#cs-chanranks", data-toggle="tab", tabindex="-1", onclick="javascript:socket.emit('requestChannelRanks')") Moderators
             li: a(href="#cs-banlist", data-toggle="tab", tabindex="-1", onclick="javascript:socket.emit('requestBanlist')") Ban list
@@ -198,7 +197,6 @@ prepend footer
             mixin adminoptions()
             mixin motdeditor()
             mixin csseditor()
-            mixin jseditor()
             mixin banlist()
             mixin recentjoins()
             mixin chanranks()
