@@ -644,8 +644,6 @@ function showUserOptions() {
     $("#us-joinmessage").prop("checked", USEROPTS.joinmessage);
     $("#us-shadowchat").prop("checked", USEROPTS.show_shadowchat);
 
-    formatScriptAccessPrefs();
-
     $("a[href='#us-general']").click();
     $("#useroptions").modal();
 }
