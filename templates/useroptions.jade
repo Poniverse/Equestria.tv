@@ -26,29 +26,7 @@ mixin us-general
   #us-general.tab-pane
     h4 General Preferences
     form.form-horizontal(action="javascript:void(0)")
-      .form-group
-        label.control-label.col-sm-4(for="#us-theme") Theme
-        .col-sm-8
-          select#us-theme.form-control
-            option(value="/css/themes/light.css") Light
-            option(value="/css/themes/bootstrap-theme.min.css") Bootstrap
-            option(value="/css/themes/slate.css") Slate
-            option(value="/css/themes/cyborg.css") Cyborg
-            option(value="/css/themes/modern.css") Modern
-      .form-group
-        label.control-label.col-sm-4(for="#us-layout") Layout
-        .col-sm-8
-          select#us-layout.form-control
-            option(value="default") Compact
-            option(value="synchtube") Synchtube (flipped)
-            option(value="fluid") Fluid
-            option(value="synchtube-fluid") Synchtube + Fluid
-            option(value="hd") HD
-      .col-sm-4
-      .col-sm-8
-        p.text-danger Changing layouts may require refreshing to take effect.
       mixin rcheckbox("us-no-channelcss", "Ignore Channel CSS")
-      mixin rcheckbox("us-no-channeljs", "Ignore Channel Javascript")
       .col-sm-4
       .col-sm-8
         p#us-conninfo.text-info <strong>Connection Information: </strong>
