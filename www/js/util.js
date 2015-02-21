@@ -137,14 +137,12 @@ function formatUserlistItem(div) {
         $("<hr/>").css("margin-top", "5px").css("margin-bottom", "5px").appendTo(profile);
         $("<p/>").text(data.profile.text).appendTo(profile);
 
-        if ($("body").hasClass("synchtube")) horiz -= profile.outerWidth();
         profile.css("left", horiz + "px")
     });
     name.mousemove(function(ev) {
         var top = ev.clientY + 5;
         var horiz = ev.clientX;
 
-        if ($("body").hasClass("synchtube")) horiz -= profile.outerWidth();
         profile.css("left", horiz + "px")
             .css("top", top + "px");
     });
