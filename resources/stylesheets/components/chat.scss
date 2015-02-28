@@ -62,7 +62,6 @@
     display: block !important;
     background: #ffffff;
     border: none;
-    z-index: 10000;
   }
 
   > .nano-pane > .nano-slider {
@@ -89,7 +88,6 @@
 .user-dropdown,
 .profile-box {
   background: #ffffff;
-  z-index: 20000;
 }
 
 .user-dropdown {
