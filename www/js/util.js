@@ -179,6 +179,7 @@ function getNameColor(rank) {
 
 function addUserDropdown(entry) {
     var name = entry.data("name"),
+        messageName = name.indexOf(" ") > -1 ? "\"" + name + "\"" : name,
         rank = entry.data("rank"),
         leader = entry.data("leader"),
         meta = entry.data("meta") || {};
@@ -250,7 +251,7 @@ function addUserDropdown(entry) {
             .click(function () {
                 var reason = prompt("Enter kick reason (optional)");
                 socket.emit("chatMsg", {
-                    msg: "/kick " + name + " " + reason,
+                    msg: "/kick " + messageName + " " + reason,
                     meta: {}
                 });
             })
@@ -262,8 +263,9 @@ function addUserDropdown(entry) {
         var mute = $("<button/>").addClass("btn btn-xs btn-default")
             .text("Mute")
             .click(function () {
+                console.log(name);
                 socket.emit("chatMsg", {
-                    msg: "/mute " + name,
+                    msg: "/mute " + messageName,
                     meta: {}
                 });
             })
@@ -272,7 +274,7 @@ function addUserDropdown(entry) {
             .text("Shadow Mute")
             .click(function () {
                 socket.emit("chatMsg", {
-                    msg: "/smute " + name,
+                    msg: "/smute " + messageName,
                     meta: {}
                 });
             })
@@ -281,7 +283,7 @@ function addUserDropdown(entry) {
             .text("Unmute")
             .click(function () {
                 socket.emit("chatMsg", {
-                    msg: "/unmute " + name,
+                    msg: "/unmute " + messageName,
                     meta: {}
                 });
             })
@@ -301,7 +303,7 @@ function addUserDropdown(entry) {
             .click(function () {
                 var reason = prompt("Enter ban reason (optional)");
                 socket.emit("chatMsg", {
-                    msg: "/ban " + name + " " + reason,
+                    msg: "/ban " + messageName + " " + reason,
                     meta: {}
                 });
             })
@@ -311,7 +313,7 @@ function addUserDropdown(entry) {
             .click(function () {
                 var reason = prompt("Enter ban reason (optional)");
                 socket.emit("chatMsg", {
-                    msg: "/ipban " + name + " " + reason,
+                    msg: "/ipban " + messageName + " " + reason,
                     meta: {}
                 });
             })
