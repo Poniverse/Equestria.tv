@@ -1675,8 +1675,8 @@ function handleVideoResize() {
 
         var responsiveFrame = $("#ytapiplayer").parent();
         var height = responsiveFrame.outerHeight() - $("#chatline").outerHeight() - 2;
-        $("#messagebuffer").height(height);
-        $("#userlist").height(height);
+        /*$("#messagebuffer").height(height);
+        $("#userlist").height(height);*/
 
         $("#ytapiplayer").attr("height", VHEIGHT = responsiveFrame.outerHeight());
         $("#ytapiplayer").attr("width", VWIDTH = responsiveFrame.outerWidth());
