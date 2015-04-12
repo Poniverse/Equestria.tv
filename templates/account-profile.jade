@@ -24,6 +24,7 @@ block content
               p= profileText
           h3 Edit Profile
           form(action="/account/profile", method="post", role="form")
+            input(type="hidden", name="_csrf", value=csrfToken)
             .form-group
               label.control-label(for="profileimage") Avatar Url
               input#profileimage.form-control(type="text", name="image")

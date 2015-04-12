@@ -28,6 +28,7 @@ block content
                   tr
                     th
                       form.form-inline.pull-right(action="/account/channels", method="post", onsubmit="return confirm('Are you sure you want to delete #{c.name}?  This cannot be undone');")
+                        input(type="hidden", name="_csrf", value=csrfToken)
                         input(type="hidden", name="action", value="delete_channel")
                         input(type="hidden", name="name", value="#{c.name}")
                         button.btn.btn-xs.btn-danger(type="submit") Delete&nbsp;
@@ -40,6 +41,7 @@ block content
               strong Channel Registration Failed
               p= newChannelError
           form(action="/account/channels", method="post")
+            input(type="hidden", name="_csrf", value=csrfToken)
             input(type="hidden", name="action", value="new_channel")
             .form-group
               label.control-label(for="channelname") Channel Name

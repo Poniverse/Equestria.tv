@@ -250,6 +250,9 @@ function addUserDropdown(entry) {
             .text("Kick")
             .click(function () {
                 var reason = prompt("Enter kick reason (optional)");
+                if (reason === null) {
+                    return;
+                }
                 socket.emit("chatMsg", {
                     msg: "/kick " + messageName + " " + reason,
                     meta: {}
@@ -302,6 +305,9 @@ function addUserDropdown(entry) {
             .text("Name Ban")
             .click(function () {
                 var reason = prompt("Enter ban reason (optional)");
+                if (reason === null) {
+                    return;
+                }
                 socket.emit("chatMsg", {
                     msg: "/ban " + messageName + " " + reason,
                     meta: {}
@@ -312,6 +318,9 @@ function addUserDropdown(entry) {
             .text("IP Ban")
             .click(function () {
                 var reason = prompt("Enter ban reason (optional)");
+                if (reason === null) {
+                    return;
+                }
                 socket.emit("chatMsg", {
                     msg: "/ipban " + messageName + " " + reason,
                     meta: {}
@@ -1258,6 +1267,13 @@ function parseMediaLink(url) {
         };
     }
 
+    if ((m = url.match(/hitbox\.tv\/([^\?&#]+)/))) {
+        return {
+            id: m[1],
+            type: "hb"
+        };
+    }
+
     if((m = url.match(/vimeo\.com\/([^\?&#]+)/))) {
         return {
             id: m[1],
@@ -1265,7 +1281,7 @@ function parseMediaLink(url) {
         };
     }
 
-    if((m = url.match(/dailymotion\.com\/video\/([^\?&#]+)/))) {
+    if((m = url.match(/dailymotion\.com\/video\/([^\?&#_]+)/))) {
         return {
             id: m[1],
             type: "dm"
@@ -1286,7 +1302,8 @@ function parseMediaLink(url) {
         };
     }
 
-    if ((m = url.match(/(?:docs|drive)\.google\.com\/file\/d\/([^\/]*)/))) {
+    if ((m = url.match(/(?:docs|drive)\.google\.com\/file\/d\/([^\/]*)/)) ||
+        (m = url.match(/drive\.google\.com\/open\?id=([^&]*)/))) {
         return {
             id: m[1],
             type: "gd"
@@ -1300,10 +1317,26 @@ function parseMediaLink(url) {
         };
     }
 
-    if ((m = url.match(/hitbox\.tv\/([^\?&#]+)/))) {
+    /*  Shorthand URIs  */
+    // To catch Google Plus by ID alone
+    if ((m = url.match(/^(?:gp:)?(\d{21}_\d{19}_\d{19})/))) {
         return {
             id: m[1],
-            type: "hb"
+            type: "gp"
+        };
+    }
+    // So we still trim DailyMotion URLs
+    if((m = url.match(/^dm:([^\?&#_]+)/))) {
+        return {
+            id: m[1],
+            type: "dm"
+        };
+    }
+    // Generic for the rest.
+    if ((m = url.match(/^([a-z]{2}):([^\?&#]+)/))) {
+        return {
+            id: m[2],
+            type: m[1]
         };
     }
 
@@ -1978,7 +2011,7 @@ function queueMessage(data, type) {
                 data.link + "</a>";
     }
     makeAlert(title, text, type)
-        .addClass("qfalert qf-" + type)
+        .addClass("linewrap qfalert qf-" + type)
         .appendTo($("#queuefail"));
 }
 
@@ -2652,6 +2685,9 @@ function googlePlusSimulator2014(data) {
 
     /* Convert youtube-style quality key to vimeo workaround quality */
     var q = USEROPTS.default_quality || "auto";
+    if (q === "highres") {
+        q = "hd1080";
+    }
 
     var fallbacks = ["hd1080", "hd720", "large", "medium", "small"];
     var i = fallbacks.indexOf(q);

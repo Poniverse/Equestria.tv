@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 extends layout
 
 block content
@@ -18,6 +19,7 @@ block content
               p= errorMessage
           h3 Change Password
           form(action="/account/edit", method="post", onsubmit="return validatePasswordChange()")
+            input(type="hidden", name="_csrf", value=csrfToken)
             input(type="hidden", name="action", value="change_password")
             .form-group
               label.control-label(for="username") Username
@@ -35,6 +37,7 @@ block content
           hr
           h3 Change Email
           form(action="/account/edit", method="post", onsubmit="return submitEmail()")
+            input(type="hidden", name="_csrf", value=csrfToken)
             input(type="hidden", name="action", value="change_email")
             .form-group
               label.control-label(for="username2") Username
@@ -48,36 +51,36 @@ block content
             button#changeemailbtn.btn.btn-danger.btn-block(type="submit") Change Email
 
 append footer
-    script(type="text/javascript").
-      function validatePasswordChange() {
-        var pw = $("#newpassword").val();
-        var pwc = $("#newpassword_confirm").val();
-        $("#passwordempty").remove();
-        $("#passwordmismatch").remove();
+  script(type="text/javascript").
+    function validatePasswordChange() {
+      var pw = $("#newpassword").val();
+      var pwc = $("#newpassword_confirm").val();
+      $("#passwordempty").remove();
+      $("#passwordmismatch").remove();
 
-        if (pw === '') {
+      if (pw === '') {
+        $("#newpassword").parent().addClass("has-error");
+        $("<p/>").addClass("text-danger")
+          .attr("id", "passwordempty")
+          .text("Password must not be empty")
+          .insertAfter($("#newpassword"));
+        return false;
+      } else {
+        if (pw !== pwc) {
+          $("#newpassword_confirm").parent().addClass("has-error");
           $("#newpassword").parent().addClass("has-error");
           $("<p/>").addClass("text-danger")
-            .attr("id", "passwordempty")
-            .text("Password must not be empty")
-            .insertAfter($("#newpassword"));
+            .attr("id", "passwordmismatch")
+            .text("Passwords do not match")
+            .insertAfter($("#newpassword_confirm"));
           return false;
         } else {
-          if (pw !== pwc) {
-            $("#newpassword_confirm").parent().addClass("has-error");
-            $("#newpassword").parent().addClass("has-error");
-            $("<p/>").addClass("text-danger")
-              .attr("id", "passwordmismatch")
-              .text("Passwords do not match")
-              .insertAfter($("#newpassword_confirm"));
-            return false;
-          } else {
-            $("#username").attr("disabled", false);
-            return true;
-          }
+          $("#username").attr("disabled", false);
+          return true;
         }
       }
-      function submitEmail() {
-        $("#username2").attr("disabled", false);
-        return true;
-      }
+    }
+    function submitEmail() {
+      $("#username2").attr("disabled", false);
+      return true;
+    }
