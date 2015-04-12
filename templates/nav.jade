@@ -14,23 +14,11 @@ mixin navdefaultlinks(page)
       mixin navlink(p, t, true)
     else
       mixin navlink(p, t, false)
-  li.dropdown
-    a.dropdown-toggle(href="#", data-toggle="dropdown") Account
-      b.caret
-    ul.dropdown-menu
-      if loggedIn
-        li: a(href="/logout?dest=#{encodeURIComponent(baseUrl + page)}&_csrf=#{csrfToken}") Logout
-        li.divider
-        li: a(href="#{loginDomain}/account/channels") Channels
-        li: a(href="#{loginDomain}/account/profile") Profile
-        li: a(href="#{loginDomain}/account/edit") Change Password/Email
-      else
-        li: a(href="#{loginDomain}/login?dest=#{encodeURIComponent(baseUrl + page)}") Login
-        li: a(href="#{loginDomain}/register") Register
+
 
 mixin navloginlogout(redirect)
   if loggedIn
-      mixin navlogoutform(redirect)
+    mixin navlogoutform(redirect)
   else
     mixin navloginform(redirect)
 
@@ -54,33 +42,4 @@ mixin navlogoutform(redirect)
           li: a(href="/account/channels") Channels
           li: a(href="/account/profile") Edit Profile
           li.divider
-          li: a(href="/logout?redirect=#{page}") Logout
-  if loginDomain == null
-    - loginDomain = ""
-
-  .visible-lg
-    form#loginform.navbar-form.navbar-right(action="#{loginDomain}/login", method="post")
-      input(type="hidden", name="_csrf", value=csrfToken)
-      input(type="hidden", name="dest", value=baseUrl + redirect)
-      .form-group
-        input#username.form-control(type="text", name="name", placeholder="Username")
-      .form-group
-        input#password.form-control(type="password", name="password", placeholder="Password")
-      .form-group
-        .checkbox
-          label
-            input(type="checkbox", name="remember")
-            span.navbar-text-nofloat Remember me
-      button#login.btn.btn-default(type="submit") Login
-  .visible-md
-    p#loginform.navbar-text.pull-right
-      a#login.navbar-link(href="#{loginDomain}/login?dest=#{encodeURIComponent(baseUrl + redirect)}") Log in
-      span &nbsp;&middot;&nbsp;
-      a#register.navbar-link(href="/register") Register
-
-
-mixin navlogoutform(redirect)
-  p#logoutform.navbar-text.pull-right
-    span#welcome Welcome, #{loginName}
-    span &nbsp;&middot;&nbsp;
-    a#logout.navbar-link(href="/logout?dest=#{encodeURIComponent(baseUrl + redirect)}&_csrf=#{csrfToken}") Logout
+          li: a(href="/logout?dest=#{encodeURIComponent(baseUrl + redirect)}&_csrf=#{csrfToken}") Logout
