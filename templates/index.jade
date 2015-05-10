@@ -4,6 +4,19 @@ block content
   section#mainpage
     .container
       .col-lg-9.col-md-9
+        .intro.row
+          .col-md-4.-mascot
+            img(src='/img/viridian-meadows.png')
+          .col-md-8
+            h1 Welcome to <strong>Equestria.tv</strong>!
+            h2.lead The video sharing site for ponies.
+            ul.-features
+              li Share music and videos in real-time
+              li Chat with fellow viewers
+              li Create your own rooms, complete with 24/7 playlists
+
+            a.callToAction(href="/login") Join now!
+
         h3 Public Channels
         table.table.table-striped
           thead
@@ -13,7 +26,7 @@ block content
           tbody
             unless channels.length
               tr
-                td(colspan=3) There are no active channels at this time, why not start one on the right?
+                td(colspan=3) No channels are active right now. Why not <a href="/account/channels">start your own</a>?
             else
               each chan in channels
                 tr

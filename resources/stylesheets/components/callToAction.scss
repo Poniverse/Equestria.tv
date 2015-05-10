@@ -1,0 +1,25 @@
+.callToAction {
+  //color: #a1f100;
+  //background: none;
+  //border: 3px solid #a1f100;
+  font-family: $headings-font-family;
+  font-weight: 600;
+  width: 100%;
+
+  display: inline-block;
+  padding: 10px 30px;
+  border-radius: 50px;
+  background-color: $brand-primary;
+  transition: background-color 300ms ease, border-color 300ms ease;
+  color: #fff;
+  font-size: 20px;
+  text-align: center;
+  text-decoration: none;
+  outline: none;
+  
+  &:hover {
+    text-decoration: none;
+    color: #fff;
+    background-color: darken($brand-primary, 5);
+  }
+}

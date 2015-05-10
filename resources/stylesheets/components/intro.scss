@@ -1,0 +1,23 @@
+.intro {
+  .lead {
+    margin: 5px 5px 10px;
+    font-weight: normal;
+  }
+
+  .-mascot {
+    text-align: center;
+
+    img {
+      height: 250px;
+      width: auto;
+    }
+  }
+
+  .-features {
+    font-family: $headings-font-family;
+    font-size: 18px;
+    font-weight: lighter;
+    margin-bottom: 16px;
+  }
+}
+

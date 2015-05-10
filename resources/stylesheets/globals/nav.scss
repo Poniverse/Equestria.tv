@@ -3,6 +3,7 @@
 }
 
 body > nav {
+  font-family: $headings-font-family;
   .navbar-nav > li > a:hover {
     text-decoration: underline;
   }
