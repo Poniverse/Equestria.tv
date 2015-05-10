@@ -15,7 +15,11 @@ block content
               li Chat with fellow viewers
               li Create your own rooms, complete with 24/7 playlists
 
-            a.callToAction(href="/login") Join now!
+            if loggedIn
+              hr
+              p.-centre.lead Join a channel below, or <a href="/account/channels">create your own</a>!
+            else
+              a.callToAction(href="/login") Join now!
 
         h3 Public Channels
         table.table.table-striped

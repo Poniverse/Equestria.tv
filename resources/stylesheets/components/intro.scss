@@ -1,4 +1,6 @@
 .intro {
+  font-family: $headings-font-family;
+
   .lead {
     margin: 5px 5px 10px;
     font-weight: normal;
@@ -14,10 +16,13 @@
   }
 
   .-features {
-    font-family: $headings-font-family;
     font-size: 18px;
     font-weight: lighter;
     margin-bottom: 16px;
+  }
+
+  .-centre {
+    text-align: center;
   }
 }
 
