@@ -19,6 +19,10 @@
 
 
 // Overrides
+body > .navbar {
+  border-radius: 0;
+}
+
 .modal-dialog {
   z-index: 100000;
 }
