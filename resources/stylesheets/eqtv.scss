@@ -16,3 +16,9 @@
 
 // Sections
 @import "sections/channel";
+
+
+// Overrides
+.modal-dialog {
+  z-index: 100000;
+}
