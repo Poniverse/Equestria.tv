@@ -1,25 +1,15 @@
-Read before submitting an issue: https://github.com/calzoneman/sync/wiki/Reporting-an-Issue
-===========================================================================================
-
-calzoneman/sync
-===============
+Equestria.tv
+============
 
 About
 -----
 
-CyTube is a web application providing media synchronization, chat, and more for an arbitrary number of channels.
-I began developing this as a hobby project, and when synchtube.com announced their closure, I
-began polishing it and readying it for the public.
+[Equestria.tv](http://equestria.tv/) is the realtime video sharing site
+operated by [Poniverse](https://poniverse.net/). The site's software is based
+on the [CyTube](https://github.com/calzoneman/sync/) project.
 
-I am hosting a CyTube server at http://cytu.be
-
-The serverside is written in JavaScript and runs on Node.JS.  It makes use
-of a MySQL database to store user registrations, cached media metadata, and
-data about each channel.
-
-The clientside is written in JavaScript and makes use of Socket.IO and
-jQuery as well as the APIs for various media providers.
-The web interface uses Bootstrap for layout and styling.
+Our fork uses Poniverse accounts for authentication, features our own branding,
+and includes a number of tweaks for our needs.
 
 Features
 --------
@@ -78,8 +68,15 @@ Features
 Installing
 ----------
 
-Installation instructions are available here: https://github.com/calzoneman/sync/wiki/CyTube-3.0-Installation-Guide
+[CyTube's installation instructions](https://github.com/calzoneman/sync/wiki/CyTube-3.0-Installation-Guide)
 
+Equestria.tv comes with a `Vagrantfile` that includes all dependencies. After
+running `vagrant up`, copy the `config.template.yaml` file to `config.yaml`,
+get a Poniverse API key from a Poniverse developer, and insert it into
+`config.yaml`.
+
+After that, `vagrant ssh` and `/vagrant/run.sh` should bring up your own copy
+of Equestria.tv at [http://192.168.39.19:8080/](http://192.168.39.19:8080/)!
 
 Feedback
 --------
@@ -90,3 +87,4 @@ License
 -------
 
 Licensed under MIT.  See LICENSE for the full license text.
+

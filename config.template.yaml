@@ -7,8 +7,8 @@ mysql:
   server: 'localhost'
   port: 3306
   database: 'cytube3'
-  user: 'cytube3'
-  password: ''
+  user: 'root'
+  password: 'root'
 
 # Define IPs/ports to listen on
 # Each entry MUST define ip and port (ip can be '' to bind all available addresses)
