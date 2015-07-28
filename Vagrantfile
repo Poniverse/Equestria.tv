@@ -68,7 +68,8 @@ Vagrant.configure(2) do |config|
     sudo apt-get update
     sudo debconf-set-selections <<< 'mariadb-server mysql-server/root_password password root'
     sudo debconf-set-selections <<< 'mariadb-server mysql-server/root_password_again password root'
-    sudo apt-get install -y mariadb-server nodejs-legacy npm git
+    curl -sL https://deb.nodesource.com/setup_0.12 | sudo bash -
+    sudo apt-get install -y mariadb-server nodejs npm git
     mysql -uroot -proot -e "CREATE DATABASE IF NOT EXISTS cytube3;"
     npm -g install bower gulp
     cd /vagrant && npm install && bower install --allow-root && gulp build
