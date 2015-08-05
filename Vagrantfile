@@ -65,11 +65,13 @@ Vagrant.configure(2) do |config|
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
   config.vm.provision "shell", inline: <<-SHELL
-    sudo apt-get update
     sudo debconf-set-selections <<< 'mariadb-server mysql-server/root_password password root'
     sudo debconf-set-selections <<< 'mariadb-server mysql-server/root_password_again password root'
-    curl -sL https://deb.nodesource.com/setup_0.12 | sudo bash -
-    sudo apt-get install -y mariadb-server nodejs npm git
+    curl -s https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add -
+    echo 'deb https://deb.nodesource.com/node_0.12 trusty main' > /etc/apt/sources.list.d/nodesource.list
+    echo 'deb-src https://deb.nodesource.com/node_0.12 trusty main' >> /etc/apt/sources.list.d/nodesource.list
+    sudo apt-get update
+    sudo apt-get install -y g++ mariadb-server nodejs git
     mysql -uroot -proot -e "CREATE DATABASE IF NOT EXISTS cytube3;"
     npm -g install bower gulp
     cd /vagrant && npm install && bower install --allow-root && gulp build
