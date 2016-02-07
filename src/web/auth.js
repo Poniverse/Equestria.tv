@@ -271,7 +271,7 @@ function handleLogout(req, res) {
     if (dest) {
         res.redirect(dest);
     } else {
-        res.redirect('');
+        res.redirect('/');
     }
 }
 
@@ -391,7 +391,6 @@ module.exports = {
         app.post("/login", handleLogin);
         app.get("/login/oauth", handleLoginOauth);
         app.get("/logout", handleLogout);
-        app.post("/logout", handleLogout);
         app.get("/register", handleRegisterPage);
         app.post("/register", handleRegister);
     }
