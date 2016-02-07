@@ -68,8 +68,8 @@ Vagrant.configure(2) do |config|
     sudo debconf-set-selections <<< 'mariadb-server mysql-server/root_password password root'
     sudo debconf-set-selections <<< 'mariadb-server mysql-server/root_password_again password root'
     curl -s https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add -
-    echo 'deb https://deb.nodesource.com/node_0.12 trusty main' > /etc/apt/sources.list.d/nodesource.list
-    echo 'deb-src https://deb.nodesource.com/node_0.12 trusty main' >> /etc/apt/sources.list.d/nodesource.list
+    echo 'deb https://deb.nodesource.com/node_5.x trusty main' > /etc/apt/sources.list.d/nodesource.list
+    echo 'deb-src https://deb.nodesource.com/node_5.x trusty main' >> /etc/apt/sources.list.d/nodesource.list
     sudo apt-get update
     sudo apt-get install -y g++ mariadb-server nodejs git
     mysql -uroot -proot -e "CREATE DATABASE IF NOT EXISTS cytube3;"
