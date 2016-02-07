@@ -107,6 +107,15 @@ function formatUserlistItem(div) {
     }
 
     var profile = null;
+    /*
+     * 2015-10-19
+     * Prevent rendering unnecessary duplicates of the profile box when
+     * a user's status changes.
+     */
+    name.unbind("mouseenter");
+    name.unbind("mousemove");
+    name.unbind("mouseleave");
+
     name.mouseenter(function(ev) {
         if (profile)
             profile.remove();
@@ -614,6 +623,7 @@ function showUserOptions() {
     $("#us-theme").val(USEROPTS.theme);
     $("#us-layout").val(USEROPTS.layout);
     $("#us-no-channelcss").prop("checked", USEROPTS.ignore_channelcss);
+
     var conninfo = "<strong>Connection Information: </strong>" +
                    "Connected to <code>" + IO_URL + "</code> (";
     if (IO_V6) {
@@ -731,9 +741,7 @@ function applyOpts() {
     }
 
     if(USEROPTS.hidevid) {
-        $("#qualitywrap").html("");
         removeVideo();
-        $("#chatwrap").removeClass("col-lg-5 col-md-5").addClass("col-lg-12 col-md-12");
     }
 
     $("#chatbtn").remove();
@@ -828,7 +836,13 @@ function showPollMenu() {
 }
 
 function scrollChat() {
-    $("#messagebuffer").scrollTop($("#messagebuffer").prop("scrollHeight"));
+    scrollAndIgnoreEvent($("#messagebuffer").prop("scrollHeight"));
+    $("#newmessages-indicator").remove();
+}
+
+function scrollAndIgnoreEvent(top) {
+    IGNORE_SCROLL_EVENT = true;
+    $("#messagebuffer").scrollTop(top);
 }
 
 function hasPermission(key) {
@@ -1213,7 +1227,7 @@ function parseMediaLink(url) {
     if(url.indexOf("jw:") == 0) {
         return {
             id: url.substring(3),
-            type: "jw"
+            type: "fi"
         };
     }
 
@@ -1332,6 +1346,13 @@ function parseMediaLink(url) {
             type: "dm"
         };
     }
+    // Raw files need to keep the query string
+    if ((m = url.match(/^fi:(.*)/))) {
+        return {
+            id: m[1],
+            type: "fi"
+        };
+    }
     // Generic for the rest.
     if ((m = url.match(/^([a-z]{2}):([^\?&#]+)/))) {
         return {
@@ -1370,10 +1391,10 @@ function sendVideoUpdate() {
     }
     PLAYER.getTime(function (seconds) {
         socket.emit("mediaUpdate", {
-            id: PLAYER.videoId,
+            id: PLAYER.mediaId,
             currentTime: seconds,
             paused: PLAYER.paused,
-            type: PLAYER.type
+            type: PLAYER.mediaType
         });
     });
 }
@@ -1456,12 +1477,6 @@ function formatChatMessage(data, last) {
     if (data.meta.shadow) {
         div.addClass("chat-shadow");
     }
-
-    div.find("img").load(function () {
-        if (SCROLLCHAT) {
-            scrollChat();
-        }
-    });
     return div;
 }
 
@@ -1473,23 +1488,55 @@ function addChatMessage(data) {
         return;
     }
     var div = formatChatMessage(data, LASTCHAT);
+    var msgBuf = $("#messagebuffer");
     // Incoming: a bunch of crap for the feature where if you hover over
     // a message, it highlights messages from that user
     var safeUsername = data.username.replace(/[^\w-]/g, '\\$');
     div.addClass("chat-msg-" + safeUsername);
-    div.appendTo($("#messagebuffer"));
+    div.appendTo(msgBuf);
     div.mouseover(function() {
         $(".chat-msg-" + safeUsername).addClass("nick-hover");
     });
     div.mouseleave(function() {
         $(".nick-hover").removeClass("nick-hover");
     });
-    // Cap chatbox at most recent 100 messages
-    if($("#messagebuffer").children().length > 100) {
-        $($("#messagebuffer").children()[0]).remove();
-    }
-    if(SCROLLCHAT)
+    var oldHeight = msgBuf.prop("scrollHeight");
+    var numRemoved = trimChatBuffer();
+    if (SCROLLCHAT) {
         scrollChat();
+    } else {
+        var newMessageDiv = $("#newmessages-indicator");
+        if (!newMessageDiv.length) {
+            newMessageDiv = $("<div/>").attr("id", "newmessages-indicator")
+                    .insertBefore($("#chatline"));
+            var bgHack = $("<span/>").attr("id", "newmessages-indicator-bghack")
+                    .appendTo(newMessageDiv);
+
+            $("<span/>").addClass("glyphicon glyphicon-chevron-down")
+                    .appendTo(bgHack);
+            $("<span/>").text("New Messages Below").appendTo(bgHack);
+            $("<span/>").addClass("glyphicon glyphicon-chevron-down")
+                    .appendTo(bgHack);
+            newMessageDiv.click(function () {
+                SCROLLCHAT = true;
+                scrollChat();
+            });
+        }
+
+        if (numRemoved > 0) {
+            IGNORE_SCROLL_EVENT = true;
+            var diff = oldHeight - msgBuf.prop("scrollHeight");
+            scrollAndIgnoreEvent(msgBuf.scrollTop() - diff);
+        }
+    }
+
+    div.find("img").load(function () {
+        if (SCROLLCHAT) {
+            scrollChat();
+        } else if ($(this).position().top < 0) {
+            scrollAndIgnoreEvent(msgBuf.scrollTop() + $(this).height());
+        }
+    });
 
     var isHighlight = false;
     if (CLIENT.name && data.username != CLIENT.name) {
@@ -1501,6 +1548,20 @@ function addChatMessage(data) {
 
     pingMessage(isHighlight);
 
+}
+
+function trimChatBuffer() {
+    var maxSize = window.CHATMAXSIZE;
+    if (!maxSize || typeof maxSize !== "number")
+        maxSize = parseInt(maxSize || 100, 10) || 100;
+    var buffer = document.getElementById("messagebuffer");
+    var count = buffer.childNodes.length - maxSize;
+
+    for (var i = 0; i < count; i++) {
+        buffer.firstChild.remove();
+    }
+
+    return count;
 }
 
 function pingMessage(isHighlight) {
@@ -1524,6 +1585,39 @@ function pingMessage(isHighlight) {
 
 /* layouts */
 
+function undoHDLayout() {
+    $("body").removeClass("hd");
+    $("#drinkbar").detach().removeClass().addClass("col-lg-12 col-md-12")
+      .appendTo("#drinkbarwrap");
+    $("#chatwrap").detach().removeClass().addClass("col-lg-5 col-md-5")
+      .appendTo("#main");
+    $("#videowrap").detach().removeClass().addClass("col-lg-7 col-md-7")
+      .appendTo("#main");
+
+    $("#leftcontrols").detach().removeClass().addClass("col-lg-5 col-md-5")
+      .prependTo("#controlsrow");
+
+    $("#plcontrol").detach().appendTo("#rightcontrols");
+    $("#videocontrols").detach().appendTo("#rightcontrols");
+
+    $("#playlistrow").prepend('<div id="leftpane" class="col-lg-5 col-md-5" />');
+    $("#leftpane").append('<div id="leftpane-inner" class="row" />');
+
+    $("#pollwrap").detach().removeClass().addClass("col-lg-12 col-md-12")
+      .appendTo("#leftpane-inner");
+    $("#playlistmanagerwrap").detach().removeClass().addClass("col-lg-12 col-md-12")
+      .css("margin-top", "10px")
+      .appendTo("#leftpane-inner");
+
+    $("#rightpane").detach().removeClass().addClass("col-lg-7 col-md-7")
+      .appendTo("#playlistrow");
+
+    $("nav").addClass("navbar-fixed-top");
+    $("#mainpage").css("padding-top", "60px");
+    $("#queue").css("max-height", "500px");
+    $("#messagebuffer, #userlist").css("max-height", "");
+}
+
 function compactLayout() {
     /* Undo synchtube layout */
     if ($("body").hasClass("synchtube")) {
@@ -1546,36 +1640,7 @@ function compactLayout() {
 
     /* Undo HD layout */
     if ($("body").hasClass("hd")) {
-        $("body").removeClass("hd");
-        $("#drinkbar").detach().removeClass().addClass("col-lg-12 col-md-12")
-          .appendTo("#drinkbarwrap");
-        $("#chatwrap").detach().removeClass().addClass("col-lg-5 col-md-5")
-          .appendTo("#main");
-        $("#videowrap").detach().removeClass().addClass("col-lg-7 col-md-7")
-          .appendTo("#main");
-
-        $("#leftcontrols").detach().removeClass().addClass("col-lg-5 col-md-5")
-          .prependTo("#controlsrow");
-
-        $("#plcontrol").detach().appendTo("#rightcontrols");
-        $("#videocontrols").detach().appendTo("#rightcontrols");
-
-        $("#playlistrow").prepend('<div id="leftpane" class="col-lg-5 col-md-5" />');
-        $("#leftpane").append('<div id="leftpane-inner" class="row" />');
-
-        $("#pollwrap").detach().removeClass().addClass("col-lg-12 col-md-12")
-          .appendTo("#leftpane-inner");
-        $("#playlistmanagerwrap").detach().removeClass().addClass("col-lg-12 col-md-12")
-          .css("margin-top", "10px")
-          .appendTo("#leftpane-inner");
-
-        $("#rightpane").detach().removeClass().addClass("col-lg-7 col-md-7")
-          .appendTo("#playlistrow");
-
-        $("nav").addClass("navbar-fixed-top");
-        $("#mainpage").css("padding-top", "60px");
-        $("#queue").css("max-height", "500px");
-        $("#messagebuffer, #userlist").css("max-height", "");
+        undoHDLayout();
     }
 
     $("body").addClass("compact");
@@ -1583,6 +1648,9 @@ function compactLayout() {
 }
 
 function fluidLayout() {
+    if ($("body").hasClass("hd")) {
+        undoHDLayout();
+    }
     $(".container").removeClass("container").addClass("container-fluid");
     $("footer .container-fluid").removeClass("container-fluid").addClass("container");
     $("body").addClass("fluid");
@@ -1594,6 +1662,15 @@ function synchtubeLayout() {
     //    $("#userlisttoggle").removeClass("glyphicon-chevron-right").addClass("glyphicon-chevron-left")
     //}
     //$("#userlisttoggle").removeClass("pull-left").addClass("pull-right")
+    // MERGE START
+    if ($("body").hasClass("hd")) {
+        undoHDLayout();
+    }
+    if($("#userlisttoggle").hasClass("glyphicon-chevron-right")){
+        $("#userlisttoggle").removeClass("glyphicon-chevron-right").addClass("glyphicon-chevron-left")
+    }
+    $("#userlisttoggle").removeClass("pull-left").addClass("pull-right");
+    // MERGE END
     $("#videowrap").detach().insertBefore($("#chatwrap"));
     $("#rightcontrols").detach().insertBefore($("#leftcontrols"));
     $("#rightpane").detach().insertBefore($("#leftpane"));
@@ -1601,6 +1678,9 @@ function synchtubeLayout() {
     $("body").addClass("synchtube");
 }
 
+/*
+ * "HD" is kind of a misnomer.  Should be renamed at some point.
+ */
 function hdLayout() {
     var videowrap = $("#videowrap"),
         chatwrap = $("#chatwrap"),
@@ -1680,7 +1760,14 @@ function chatOnly() {
         .click(function () {
             $("#channeloptions").modal();
         });
+    $("<span/>").addClass("label label-default pull-right pointer")
+        .text("Emote List")
+        .appendTo($("#chatheader"))
+        .click(function () {
+            EMOTELIST.show();
+        });
     setVisible("#showchansettings", CLIENT.rank >= 2);
+
     $("body").addClass("chatOnly");
     handleWindowResize();
 }
@@ -1703,7 +1790,7 @@ function handleVideoResize() {
     var intv, ticks = 0;
     var resize = function () {
         if (++ticks > 10) clearInterval(intv);
-        if ($("#ytapiplayer").parent().height() === 0) return;
+        if ($("#ytapiplayer").parent().outerHeight() <= 0) return;
         clearInterval(intv);
 
         var responsiveFrame = $("#ytapiplayer").parent();
@@ -1722,7 +1809,7 @@ function handleVideoResize() {
 $(window).resize(handleWindowResize);
 handleWindowResize();
 
-function removeVideo() {
+function removeVideo(event) {
     try {
         PLAYER.setVolume(0);
         if (PLAYER.type === "rv") {
@@ -1733,6 +1820,7 @@ function removeVideo() {
 
     $("#videowrap").remove();
     $("#chatwrap").removeClass("col-lg-5 col-md-5").addClass("col-md-12");
+    if (event) event.preventDefault();
 }
 
 /* channel administration stuff */
@@ -1887,30 +1975,18 @@ function waitUntilDefined(obj, key, fn) {
 }
 
 function hidePlayer() {
-    if(!PLAYER)
-        return;
+    /* 2015-09-16
+     * Originally used to hide the player while a modal was open because of
+     * certain flash videos that always rendered on top.  Seems to no longer
+     * be an issue.  Uncomment this if it is.
+    if (!PLAYER) return;
 
-    if(!/(chrome|MSIE)/ig.test(navigator.userAgent))
-        return;
-
-    PLAYER.size = {
-        width: $("#ytapiplayer").width(),
-        height: $("#ytapiplayer").height()
-    };
-
-    $("#ytapiplayer").attr("width", 1)
-        .attr("height", 1);
+    $("#ytapiplayer").hide();
+    */
 }
 
 function unhidePlayer() {
-    if(!PLAYER)
-        return;
-
-    if(!/(chrome|MSIE)/ig.test(navigator.userAgent))
-        return;
-
-    $("#ytapiplayer").width(PLAYER.size.width)
-        .height(PLAYER.size.height);
+    //$("#ytapiplayer").show();
 }
 
 function chatDialog(div) {
@@ -1971,9 +2047,7 @@ function queueMessage(data, type) {
     var alerts = $(".qfalert.qf-" + type + " .alert");
     for (var i = 0; i < alerts.length; i++) {
         var al = $(alerts[i]);
-        var cl = al.clone();
-        cl.children().remove();
-        if (cl.text() === data.msg) {
+        if (al.data("reason") === data.msg) {
             var tag = al.find("." + ltype);
             if (tag.length > 0) {
                 var morelinks = al.find(".qflinks");
@@ -2010,9 +2084,10 @@ function queueMessage(data, type) {
         text += "<br><a href='" + data.link + "' target='_blank'>" +
                 data.link + "</a>";
     }
-    makeAlert(title, text, type)
+    var newAlert = makeAlert(title, text, type)
         .addClass("linewrap qfalert qf-" + type)
         .appendTo($("#queuefail"));
+    newAlert.find(".alert").data("reason", data.msg);
 }
 
 function setupChanlogFilter(data) {
@@ -2506,6 +2581,11 @@ function formatUserPlaylistList() {
             .attr("title", "Delete playlist")
             .appendTo(btns)
             .click(function () {
+                var really = confirm("Are you sure you want to delete" +
+                    " this playlist? This cannot be undone.");
+                if (!really) {
+                    return;
+                }
                 socket.emit("deletePlaylist", {
                     name: pl.name
                 });
@@ -2516,8 +2596,12 @@ function formatUserPlaylistList() {
 function loadEmotes(data) {
     CHANNEL.emotes = [];
     data.forEach(function (e) {
-        e.regex = new RegExp(e.source, "gi");
-        CHANNEL.emotes.push(e);
+        if (e.image && e.name) {
+            e.regex = new RegExp(e.source, "gi");
+            CHANNEL.emotes.push(e);
+        } else {
+            console.error("Rejecting invalid emote: " + JSON.stringify(e));
+        }
     });
 }
 
@@ -2573,10 +2657,14 @@ function initPm(user) {
     var buffer = $("<div/>").addClass("pm-buffer linewrap").appendTo(body);
     $("<hr/>").appendTo(body);
     var input = $("<input/>").addClass("form-control pm-input").attr("type", "text")
+        .attr("maxlength", 240)
         .appendTo(body);
 
     input.keydown(function (ev) {
         if (ev.keyCode === 13) {
+            if (CHATTHROTTLE) {
+                return;
+            }
             var meta = {};
             var msg = input.val();
             if (msg.trim() === "") {
@@ -2709,4 +2797,116 @@ function googlePlusSimulator2014(data) {
     data.url = data.meta.gpdirect[q].url;
     data.contentType = data.meta.gpdirect[q].contentType;
     return data;
+}
+
+function EmoteList() {
+    this.modal = $("#emotelist");
+    this.modal.on("hidden.bs.modal", unhidePlayer);
+    this.table = document.querySelector("#emotelist table");
+    this.cols = 5;
+    this.itemsPerPage = 25;
+    this.emotes = [];
+    this.emoteListChanged = true;
+    this.page = 0;
+}
+
+EmoteList.prototype.handleChange = function () {
+    this.emotes = CHANNEL.emotes.slice();
+    if (USEROPTS.emotelist_sort) {
+        this.emotes.sort(function (a, b) {
+            var x = a.name.toLowerCase();
+            var y = b.name.toLowerCase();
+
+            if (x < y) {
+                return -1;
+            } else if (x > y) {
+                return 1;
+            } else {
+                return 0;
+            }
+        });
+    }
+
+    if (this.filter) {
+        this.emotes = this.emotes.filter(this.filter);
+    }
+
+    this.paginator = new NewPaginator(this.emotes.length, this.itemsPerPage,
+            this.loadPage.bind(this));
+    var container = document.getElementById("emotelist-paginator-container");
+    container.innerHTML = "";
+    container.appendChild(this.paginator.elem);
+    this.paginator.loadPage(this.page);
+    this.emoteListChanged = false;
+};
+
+EmoteList.prototype.show = function () {
+    if (this.emoteListChanged) {
+        this.handleChange();
+    }
+
+    this.modal.modal();
+};
+
+EmoteList.prototype.loadPage = function (page) {
+    var tbody = this.table.children[0];
+    tbody.innerHTML = "";
+
+    var row;
+    var start = page * this.itemsPerPage;
+    if (start >= this.emotes.length) return;
+    var end = Math.min(start + this.itemsPerPage, this.emotes.length);
+    var _this = this;
+
+    for (var i = start; i < end; i++) {
+        if ((i - start) % this.cols === 0) {
+            row = document.createElement("tr");
+            tbody.appendChild(row);
+        }
+
+        (function (emote) {
+            var td = document.createElement("td");
+            td.className = "emote-preview-container";
+
+            // Trick element to vertically align the emote within the container
+            var hax = document.createElement("span");
+            hax.className = "emote-preview-hax";
+            td.appendChild(hax);
+
+            var img = document.createElement("img");
+            img.src = emote.image;
+            img.className = "emote-preview";
+            img.title = emote.name;
+            img.onclick = function () {
+                var val = chatline.value;
+                if (!val) {
+                    chatline.value = emote.name;
+                } else {
+                    if (!val.charAt(val.length - 1).match(/\s/)) {
+                        chatline.value += " ";
+                    }
+                    chatline.value += emote.name;
+                }
+
+                _this.modal.modal("hide");
+                chatline.focus();
+            };
+
+            td.appendChild(img);
+            row.appendChild(td);
+        })(this.emotes[i]);
+    }
+
+    this.page = page;
+};
+
+window.EMOTELIST = new EmoteList();
+
+function showChannelSettings() {
+    hidePlayer();
+    $("#channeloptions").on("hidden.bs.modal", function () {
+        unhidePlayer();
+    });
+
+    $("#channeloptions").modal();
 }

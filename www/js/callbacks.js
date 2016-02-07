@@ -124,6 +124,7 @@ Callbacks = {
     cooldown: function (time) {
         time = time + 200;
         $("#chatline").css("color", "#ff0000");
+        $(".pm-input").css("color", "#ff0000");
         if (CHATTHROTTLE && $("#chatline").data("throttle_timer")) {
             clearTimeout($("#chatline").data("throttle_timer"));
         }
@@ -131,6 +132,7 @@ Callbacks = {
         $("#chatline").data("throttle_timer", setTimeout(function () {
             CHATTHROTTLE = false;
             $("#chatline").css("color", "");
+            $(".pm-input").css("color", "");
         }, time));
     },
 
@@ -256,12 +258,39 @@ Callbacks = {
     channelCSSJS: function(data) {
         $("#chancss").remove();
         CHANNEL.css = data.css;
-        $("#csstext").val(data.css);
+        $("#cs-csstext").val(data.css);
         if(data.css && !USEROPTS.ignore_channelcss) {
             $("<style/>").attr("type", "text/css")
                 .attr("id", "chancss")
                 .text(data.css)
                 .appendTo($("head"));
+        }
+
+        $("#chanjs").remove();
+        CHANNEL.js = data.js;
+        $("#cs-jstext").val(data.js);
+
+        if(data.js && !USEROPTS.ignore_channeljs) {
+            var src = data.js
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/\n/g, "<br>")
+                .replace(/\t/g, "    ")
+                .replace(/ /g, "&nbsp;");
+            src = encodeURIComponent(src);
+
+            var viewsource = "data:text/html, <body style='font: 9pt monospace;" +
+                             "max-width:60rem;margin:0 auto;padding:4rem;'>" +
+                             src + "</body>";
+            checkScriptAccess(viewsource, "embedded", function (pref) {
+                if (pref === "ALLOW") {
+                    $("<script/>").attr("type", "text/javascript")
+                        .attr("id", "chanjs")
+                        .text(data.js)
+                        .appendTo($("body"));
+                }
+            });
         }
     },
 
@@ -469,6 +498,7 @@ Callbacks = {
 
     clearchat: function() {
         $("#messagebuffer").html("");
+        LASTCHAT.name = "";
     },
 
     userlist: function(data) {
@@ -774,64 +804,51 @@ Callbacks = {
             return;
         }
 
-        /* Failsafe */
+        // Failsafe
         if (isNaN(VOLUME) || VOLUME > 1 || VOLUME < 0) {
             VOLUME = 1;
         }
 
-        var shouldResize = $("#ytapiplayer").html() === "";
+        function loadNext() {
+            if (!PLAYER || data.type !== PLAYER.mediaType) {
+                loadMediaPlayer(data);
+            }
 
+            handleMediaUpdate(data);
+        }
+
+        // Persist the user's volume preference from the the player, if possible
         if (PLAYER && typeof PLAYER.getVolume === "function") {
             PLAYER.getVolume(function (v) {
                 if (typeof v === "number") {
                     if (v < 0 || v > 1) {
+                        // Dailymotion's API was wrong once and caused a huge
+                        // headache.  This alert is here to make debugging easier.
                         alert("Something went wrong with retrieving the volume.  " +
                             "Please tell calzoneman the following: " +
-                            JSON.stringify({ v: v, t: PLAYER.type, i: PLAYER.videoId }));
+                            JSON.stringify({
+                                v: v,
+                                t: PLAYER.mediaType,
+                                i: PLAYER.mediaId
+                            }));
                     } else {
                         VOLUME = v;
                         setOpt("volume", VOLUME);
                     }
                 }
+
+                loadNext();
             });
+        } else {
+            loadNext();
         }
 
-        if (CHANNEL.opts.allow_voteskip)
+        // Reset voteskip since the video changed
+        if (CHANNEL.opts.allow_voteskip) {
             $("#voteskip").attr("disabled", false);
+        }
 
         $("#currenttitle").text("Currently Playing: " + data.title);
-
-        if (data.type != "sc" && PLAYER.type == "sc")
-            // [](/goddamnitmango)
-            fixSoundcloudShit();
-
-        if (data.type != "jw" && PLAYER.type == "jw") {
-            // Is it so hard to not mess up my DOM?
-            $("<div/>").attr("id", "ytapiplayer")
-                .insertBefore($("#ytapiplayer_wrapper"));
-            $("#ytapiplayer_wrapper").remove();
-        }
-
-        if (data.type === "fi") {
-            data.url = data.id;
-        }
-
-        if (NO_VIMEO && data.type === "vi" && data.meta.direct) {
-            data = vimeoSimulator2014(data);
-        }
-
-        /*
-         * Google Docs now uses the same simulator as Google+
-         */
-        if (data.type === "gp" || data.type === "gd") {
-            data = googlePlusSimulator2014(data);
-        }
-
-        if (data.type != PLAYER.type) {
-            loadMediaPlayer(data);
-        }
-
-        handleMediaUpdate(data);
     },
 
     mediaUpdate: function(data) {
@@ -839,7 +856,9 @@ Callbacks = {
             return;
         }
 
-        handleMediaUpdate(data);
+        if (PLAYER) {
+            handleMediaUpdate(data);
+        }
     },
 
     setPlaylistLocked: function (locked) {
@@ -976,6 +995,7 @@ Callbacks = {
         var tbl = $("#cs-emotes table");
         tbl.data("entries", data);
         formatCSEmoteList();
+        EMOTELIST.emoteListChanged = true;
     },
 
     updateEmote: function (data) {
@@ -1030,8 +1050,9 @@ Callbacks = {
         errDialog("This channel currently exceeds the maximum size of " +
             toHumanReadable(data.limit) + " (channel size is " +
             toHumanReadable(data.actual) + ").  Please reduce the size by removing " +
-            "unneeded playlist items, filters, and/or emotes or else the channel will " +
-            "be unable to load the next time it is reloaded").attr("id", "chandumptoobig");
+            "unneeded playlist items, filters, and/or emotes.  Changes to the channel " +
+            "will not be saved until the size is reduced to under the limit.")
+            .attr("id", "chandumptoobig");
     }
 }
 
@@ -1047,33 +1068,62 @@ setupCallbacks = function() {
                     Callbacks[key](data);
                 } catch (e) {
                     if (SOCKET_DEBUG) {
-                        console.log("EXCEPTION: " + e.stack);
+                        console.log("EXCEPTION: " + e + "\n" + e.stack);
                     }
                 }
             });
         })(key);
     }
-}
+};
 
-try {
+(function () {
     if (typeof io === "undefined") {
-        makeAlert("Uh oh!", "It appears the connection to <code>" + IO_URL + "</code> " +
+        makeAlert("Uh oh!", "It appears the socket.io connection " +
                             "has failed.  If this error persists, a firewall or " +
                             "antivirus is likely blocking the connection, or the " +
                             "server is down.", "alert-danger")
             .appendTo($("#announcements"));
-        throw false;
+        Callbacks.disconnect();
+        return;
     }
 
-    var opts = { transports: ["websocket", "polling"] };
-    if (IO_URL === IO_URLS["ipv4-ssl"] || IO_URL === IO_URLS["ipv6-ssl"]) {
-        opts.secure = true;
-        socket = io(IO_URL, { secure: true });
-    }
-    socket = io(IO_URL, opts);
-    setupCallbacks();
-} catch (e) {
-    if (e) {
-        Callbacks.disconnect();
-    }
-}
+    $.getJSON("/socketconfig/" + CHANNEL.name + ".json")
+        .done(function (socketConfig) {
+            if (socketConfig.error) {
+                makeAlert("Error", "Socket.io configuration returned error: " +
+                        socketConfig.error, "alert-danger")
+                    .appendTo($("#announcements"));
+                return;
+            }
+
+            var chosenServer = null;
+            socketConfig.servers.forEach(function (server) {
+                if (chosenServer === null) {
+                    chosenServer = server;
+                } else if (server.secure && !chosenServer.secure) {
+                    chosenServer = server;
+                } else if (!server.ipv6Only && chosenServer.ipv6Only) {
+                    chosenServer = server;
+                }
+            });
+
+            if (chosenServer === null) {
+                makeAlert("Error",
+                        "Socket.io configuration was unable to find a suitable server",
+                        "alert-danger")
+                    .appendTo($("#announcements"));
+            }
+
+            var opts = {
+                secure: chosenServer.secure
+            };
+
+            socket = io(chosenServer.url, opts);
+            setupCallbacks();
+        }).fail(function () {
+            makeAlert("Error", "Failed to retrieve socket.io configuration",
+                    "alert-danger")
+                .appendTo($("#announcements"));
+            Callbacks.disconnect();
+        });
+})();

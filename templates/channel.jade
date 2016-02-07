@@ -2,10 +2,22 @@ extends layout
 
 append head
     link(href="//code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css", rel="stylesheet")
-    
+
 append nav-left-links
   li: a(href="javascript:void(0)", onclick="javascript:showUserOptions()") Options
-  li: a#showchansettings(href="javascript:void(0)", onclick="javascript:$('#channeloptions').modal()") Channel Settings
+  li: a#showchansettings(href="javascript:void(0)", onclick="javascript:showChannelSettings()") Channel Settings
+  li.dropdown
+    a#cs-edit-dd-toggle(href="#", data-toggle="dropdown") Edit
+      span.caret
+    ul.dropdown-menu
+      li: a(href="#cs-chatfilters", data-toggle="tab", onclick="javascript:socket.emit('requestChatFilters')") Chat Filters
+        li: a(href="#cs-emotes", data-toggle="tab") Emotes
+        li: a(href="#cs-motdeditor", data-toggle="tab", tabindex="-1") MOTD
+        li: a(href="#cs-csseditor", data-toggle="tab", tabindex="-1") CSS
+        li: a(href="#cs-permedit", data-toggle="tab", tabindex="-1") Permissions
+        li: a(href="#cs-chanranks", data-toggle="tab", tabindex="-1", onclick="javascript:socket.emit('requestChannelRanks')") Moderators
+      li: a(href="#cs-banlist", data-toggle="tab", tabindex="-1", onclick="javascript:socket.emit('requestBanlist')") Ban list
+      li: a(href="#cs-chanlog", data-toggle="tab", onclick="javascript:socket.emit('readChanLog')") Log
 
 block content
 
@@ -176,10 +188,6 @@ prepend footer
           ul.nav.nav-tabs
             li.active: a(href="#cs-miscoptions", data-toggle="tab") General Settings
             li: a(href="#cs-adminoptions", data-toggle="tab") Admin Settings
-            li.dropdown
-              a#cs-edit-dd-toggle(href="#", data-toggle="dropdown") Edit
-                span.caret
-              ul.dropdown-menu
                 li: a(href="#cs-chatfilters", data-toggle="tab", onclick="javascript:socket.emit('requestChatFilters')") Chat Filters
                 li: a(href="#cs-emotes", data-toggle="tab") Emotes
                 li: a(href="#cs-motdeditor", data-toggle="tab", tabindex="-1") MOTD
@@ -209,7 +217,6 @@ prepend footer
 append footer
   script(src=sioSource)
   script(src="/js/data.js")
-  script(src="/sioconfig")
   script(src="/js/util.js")
   script(src="/js/player.js")
   script(src="/js/paginator.js")
@@ -217,12 +224,11 @@ append footer
   script(src="/js/callbacks.js")
   script(src="/js/vendor/jquery.nanoscroller.js")
   script(defer, src="https://www.youtube.com/iframe_api")
-  script(defer, src="//api.dmcdn.net/all.js")
-  script(defer, src="//jwpsrv.com/library/QouFCLBMEeKC+CIACpYGxA.js")
+  script(defer, src="https://api.dmcdn.net/all.js")
   script(defer, src="/js/sc.js")
   script(defer, src="/js/froogaloop.min.js")
-  script(defer, src="/js/swf.js")
+  script(defer, src="/js/video.js")
   script(type="text/javascript").
-    setTimeout(function() {
+    setTimeout(function () {
       $(".nano").nanoScroller();
-    }, 2000)
+    }, 2000);

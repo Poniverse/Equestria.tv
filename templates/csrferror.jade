@@ -1,11 +1,10 @@
 extends layout
 
-
 block content
   section#mainpage.container
     .col-md-12
       .alert.alert-danger
-        h1(style="margin-top: 0") Invalid Session
+        h1 Invalid Session
         p Your browser attempted to submit form data to <code>#{path}</code> with an invalid authentication token.  This may be because:
           ul
             li Your session has expired
@@ -13,4 +12,5 @@ block content
             li A malicious user has attempted to tamper with your session
             li Your browser does not support cookies, or they are not enabled
           | If the problem persists, please contact an administrator.
-        a(href=path) Return to previous page
+        if referer
+          a(href=referer) Return to previous page

@@ -26,6 +26,10 @@ footer {
     background-color: #ffffff;
 }
 
+#emotelist td {
+    background-color: #f0f0f0;
+}
+
 .chat-shadow {
     color: #aaaaaa;
 }
@@ -70,4 +74,9 @@ footer {
 
 .queue_entry.queue_active {
     background-color: #d9edf7;
+}
+
+#newmessages-indicator-bghack {
+    background: rgb(200, 200, 200);
+    background: rgba(200, 200, 200, 0.9);
 }
