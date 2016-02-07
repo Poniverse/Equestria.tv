@@ -225,7 +225,6 @@ setuid:
 # how long to wait in ms before changing uid/gid
   timeout: 15
 
-<<<<<<< HEAD
 trusted-proxies:
   - 127.0.0.1
   - ::1
