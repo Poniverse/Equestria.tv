@@ -83,7 +83,7 @@ function handleLoginOauth(req, res) {
     }
 
     function registerPoniverseUser(user) {
-        var ip = webserver.ipForRequest(req);
+        var ip = req.realIP;
         // User is never going to need this password, we just need something unguessable
         // @link http://stackoverflow.com/questions/8855687/secure-random-token-in-node-js
         var password = crypto.randomBytes(100).toString('hex');
