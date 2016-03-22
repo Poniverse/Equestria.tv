@@ -2,7 +2,8 @@ import clone from 'clone';
 
 const DEFAULT_TRUSTED_PROXIES = Object.freeze([
     '127.0.0.1',
-    '::1'
+    '::1',
+    '10.0.0.105'
 ]);
 
 export default class WebConfiguration {
