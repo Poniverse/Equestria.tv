@@ -14,15 +14,4 @@ window.CustomEmbedPlayer = class CustomEmbedPlayer extends EmbedPlayer
             console.error('CustomEmbedPlayer::load(): missing meta.embed')
             return
 
-        embedSrc = data.meta.embed.src
-        link = "<a href=\"#{embedSrc}\" target=\"_blank\"><strong>#{embedSrc}</strong></a>"
-        alert = makeAlert('Untrusted Content', CUSTOM_EMBED_WARNING.replace('%link%', link),
-            'alert-warning')
-            .removeClass('col-md-12')
-        $('<button/>').addClass('btn btn-default')
-            .text('Embed')
-            .click(=>
-                super(data)
-            )
-            .appendTo(alert.find('.alert'))
-        removeOld(alert)
+        super(data);
