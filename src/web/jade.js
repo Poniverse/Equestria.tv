@@ -13,7 +13,7 @@ function merge(locals, res) {
         siteTitle: Config.get("html-template.title"),
         siteDescription: Config.get("html-template.description"),
         typekit: Config.get("typekit"),
-        siteAuthor: "Calvin 'calzoneman' 'cyzon' Montgomery",
+        siteAuthor: "Poniverse.net",
         loginDomain: Config.get("https.enabled") ? Config.get("https.full-address")
                                                  : Config.get("http.full-address"),
         currentUrl: res.req.url,
